@@ -1,13 +1,28 @@
-import java.util.Comparator;
 import java.util.LinkedList;
 
+/* 
+ * This class implements a multi Term polynomial expression in one variable (x)
+ * of the form a_0 + a_1*x^1 + a_2*x^2 + ... + a_n*x^n
+ * where a_i is a double value
+*/
 public class PolynomialFunction {
 
+    /* 
+     * A LinkedList of Terms representing the polynomial expression
+    */
     LinkedList<Term> terms;
-    int degree = 0;
-    String name;
-    Comparator<Term> tComp = Term.tComp;
 
+    /* 
+     * String representing the name of the polynomial
+     * i.e. the 'f' in 'f(x)' or the 'h' in 'h(x)'
+    */
+    String name;
+
+    /* 
+     * @Constructor
+     * @param terms : list of the terms of the polynomial
+     * @param name : name of the polynomial
+    */
     public PolynomialFunction(LinkedList<Term> terms, String name){
         if(terms.isEmpty()){
             this.terms = new LinkedList<>();
@@ -16,30 +31,39 @@ public class PolynomialFunction {
             this.terms = terms;
         }
         this.name = name;
-        for(Term t: terms){
-            if(this.degree < t.exponent){
-                this.degree = t.exponent;
-            }
-        }
-        terms.sort(tComp);
+        terms.sort(Term.tComp);
     }
 
+    /* 
+     * Adds a Term to current polynomial
+     * @param t : Term to add to current polynomial
+    */
     public void addTerm(Term t){
         if(degExists(t) != null){
             Term match = degExists(t);
             match.coefficient = match.coefficient + t.coefficient;
         }else{
             terms.addLast(t);
-            terms.sort(tComp);
+            terms.sort(Term.tComp);
         }
     }
 
+    /* 
+     * Adds a Polynomial to current Polynomial
+     * @param other : Polynomial to add to current polynomial
+    */
     public void add(PolynomialFunction other){
         for(Term term : other.terms){
             this.addTerm(term);
         }
     }
 
+    /* 
+     * Checks if a Term with given exponent exists in current Polynomial
+     * if there is such a Term, return it
+     * else return null
+     * @param t : Term whose degree we are looking for in current Polynomial
+    */
     public Term degExists(Term t){
         for(Term term : terms){
             if(term.exponent == t.exponent){
@@ -49,12 +73,21 @@ public class PolynomialFunction {
         return null;
     }
 
+    /* 
+     * Multiply the current Polynomial by the given Term
+     * @param t : Term to multiply the current polynomial by
+    */
     public void multiplyByTerm(Term t){
         for(Term term : this.terms){
             term.multiplyBy(t);
         }
     }
 
+    /* 
+     * Multiply the current Polynomial by the given Polynomial
+     * @param t : Polynomial to multiply the current Polynomial by
+     * return the resulting Polynomial (product)
+    */
     public PolynomialFunction multiplyBy(PolynomialFunction other){
         PolynomialFunction result = new PolynomialFunction(new LinkedList<>(), this.name);
         for(Term t : other.terms){
@@ -68,6 +101,11 @@ public class PolynomialFunction {
         return result;
     }
 
+    /* 
+     * Evaluate Polynomial with the given input value
+     * @param input -> value to substitute x by
+     * return the evaluated number
+    */
     public Double evaluate(Double input){
         Double value = 0.0;
         for(Term term : this.terms){
@@ -76,6 +114,9 @@ public class PolynomialFunction {
         return value;
     }
 
+    /* 
+     * returns a String representation of the polynomial expression
+    */
     public String toString(){
         StringBuilder print = new StringBuilder();
         int i;
