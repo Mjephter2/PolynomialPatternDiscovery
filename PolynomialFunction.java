@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 /* 
@@ -26,7 +27,7 @@ public class PolynomialFunction {
     public PolynomialFunction(LinkedList<Term> terms, String name){
         if(terms.isEmpty()){
             this.terms = new LinkedList<>();
-            terms.add(new Term(0.0, 1));
+            terms.add(new Term(BigDecimal.ZERO, 1));
         }else{
             this.terms = terms;
         }
@@ -41,7 +42,7 @@ public class PolynomialFunction {
     public void addTerm(Term t){
         if(degExists(t) != null){
             Term match = degExists(t);
-            match.coefficient = match.coefficient + t.coefficient;
+            match.coefficient = match.coefficient.add(t.coefficient);
         }else{
             terms.addLast(t);
             terms.sort(Term.tComp);
@@ -106,10 +107,10 @@ public class PolynomialFunction {
      * @param input -> value to substitute x by
      * return the evaluated number
     */
-    public Double evaluate(Double input){
-        Double value = 0.0;
+    public BigDecimal evaluate(BigDecimal input){
+        BigDecimal value = BigDecimal.ZERO;
         for(Term term : this.terms){
-            value += term.evaluate(input);
+            value = value.add(term.evaluate(input));
         }
         return value;
     }
@@ -122,12 +123,12 @@ public class PolynomialFunction {
         int i;
         print.append(this.name + "(x) = ");
         for(i = 0; i < terms.size() - 1; i++){
-            if(terms.get(i).coefficient == 0){
+            if(terms.get(i).coefficient.compareTo(BigDecimal.ZERO) == 0){
                 continue;
             }
             print.append(terms.get(i).toString() + " + ");
         }
-        if(terms.get(i).coefficient != 0){
+        if(terms.get(i).coefficient.compareTo(BigDecimal.ZERO) != 0){
             print.append(terms.get(i).toString());
         }else{
             print.replace(print.length() - 2, print.length(), "");

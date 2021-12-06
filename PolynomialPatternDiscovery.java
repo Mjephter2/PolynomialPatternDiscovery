@@ -1,5 +1,8 @@
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -11,7 +14,7 @@ public class PolynomialPatternDiscovery {
     /* 
      * N x 2 array containing the given pairs (X_i, Yi)
     */
-    Double[][] xyPairs;
+    BigDecimal[][] xyPairs;
 
     /* 
      * @Constructor
@@ -20,20 +23,20 @@ public class PolynomialPatternDiscovery {
      * number of pairs (X, Y) and the body consisting of 2 double values per line
      * Example of input file content:
      *      3
-     *      1 3
+     *      1.0 3.75
      *      2 2
-     *      5 -1
+     *      5 -1.30
     */
     public PolynomialPatternDiscovery(String inputFile){
-        try(Scanner in = new Scanner(new FileInputStream(inputFile))){
-            this.xyPairs = new Double[in.nextInt()][2];
+        try(Scanner in = new Scanner(new File(inputFile))){
+            this.xyPairs = new BigDecimal[in.nextInt()][2];
             int i = 0;
-            while(in.hasNext()){
-                xyPairs[i][0] = in.nextDouble();
-                xyPairs[i][1] = in.nextDouble();
+            while(in.hasNextDouble()){
+                xyPairs[i][0] = new BigDecimal(in.nextDouble());
+                xyPairs[i][1] = new BigDecimal(in.nextDouble());
                 i++;
             }
-        }catch(IOException e){
+        }catch(FileNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -48,15 +51,15 @@ public class PolynomialPatternDiscovery {
         PolynomialFunction h1 = new PolynomialFunction(t, "h1"); // h1(x) = y_(0,1)
 
         for(int j = 1; j < xyPairs.length; j++){
-            Term t1 = new Term(1.0, 1); // x
-            Term t2 = new Term(-1 * xyPairs[j][0], 0); // -y_(j,0)
+            Term t1 = new Term(BigDecimal.ONE, 1); // x
+            Term t2 = new Term(xyPairs[j][0].multiply(new BigDecimal(-1)), 0); // -y_(j,0)
             LinkedList<Term> exp = new LinkedList<>();
             exp.add(t1);
             exp.add(t2);
             PolynomialFunction currExpression = new PolynomialFunction(exp, "");
             // x - y_(j,0)
 
-            Term t3 = new Term(1.0/(xyPairs[0][0] - xyPairs[j][0]), 0);
+            Term t3 = new Term(BigDecimal.ONE.divide(xyPairs[0][0].subtract(xyPairs[j][0]), RoundingMode.HALF_EVEN), 0);
             // 1/(y_(0,0) - y_(j,0))
 
             currExpression.multiplyByTerm(t3); // 1/(y_(0,0) - y_(j,0)) * (x - y_(j,0))
@@ -70,7 +73,7 @@ public class PolynomialPatternDiscovery {
      * Calculate and return h2
     */
     public PolynomialFunction calculateH2(){
-        Term t0 = new Term(0.0, 1); // 0
+        Term t0 = new Term(BigDecimal.ZERO, 1); // 0
         LinkedList<Term> t = new LinkedList<>();
         t.addLast(t0);
         PolynomialFunction h2 = new PolynomialFunction(t, "h2"); // h2(x) = 0
@@ -83,15 +86,15 @@ public class PolynomialPatternDiscovery {
 
             // calculate first set of product
             for(int j = 0; j < i; j++){
-                Term t1 = new Term(1.0, 1); // x
-                Term t2 = new Term(-xyPairs[j][0], 0); // -y_(j,0)
+                Term t1 = new Term(BigDecimal.ONE, 1); // x
+                Term t2 = new Term(xyPairs[j][0].multiply(new BigDecimal(-1), MathContext.UNLIMITED), 0); // -y_(j,0)
                 LinkedList<Term> ts = new LinkedList<>();
                 ts.addLast(t1);
                 ts.addLast(t2);
                 PolynomialFunction p1 = new PolynomialFunction(ts, "p1");
                 // p1(x) = x - y_(j,0)
 
-                Term t3 = new Term(1.0/(xyPairs[i][0] - xyPairs[j][0]), 0);
+                Term t3 = new Term(BigDecimal.ONE.divide(xyPairs[i][0].subtract(xyPairs[j][0]), 2, RoundingMode.HALF_EVEN) , 0);
                 // 1/(y_(i,0) - y_(j,0))
                 p1.multiplyByTerm(t3);
                 // p1 = p1 * 1/(y_(i,0) - y_(j,0))
@@ -101,15 +104,15 @@ public class PolynomialPatternDiscovery {
             }
             // calculate second set of product 
             for(int j = i + 1; j < xyPairs.length; j++){
-                Term t1 = new Term(1.0, 1); // x
-                Term t2 = new Term(-xyPairs[j][0], 0); // -y_(j,0)
+                Term t1 = new Term(BigDecimal.ONE, 1); // x
+                Term t2 = new Term(xyPairs[j][0].multiply(new BigDecimal(-1), MathContext.UNLIMITED), 0); // -y_(j,0)
                 LinkedList<Term> ts = new LinkedList<>();
                 ts.addLast(t1);
                 ts.addLast(t2);
                 PolynomialFunction p2 = new PolynomialFunction(ts, "p2");
                 // p2(x) = x - y_(j,0)
 
-                Term t3 = new Term(1.0/(xyPairs[i][0] - xyPairs[j][0]), 0);
+                Term t3 = new Term(BigDecimal.ONE.divide(xyPairs[i][0].subtract(xyPairs[j][0]), 2, RoundingMode.HALF_EVEN), 0);
                 // 1/(y_(i,0) - y_(j,0))
                 p2.multiplyByTerm(t3);
                 // p2 = p2 * 1/(y_(i,0) - y_(j,0))
@@ -133,15 +136,15 @@ public class PolynomialPatternDiscovery {
         PolynomialFunction h2 = new PolynomialFunction(t, "h2");
 
         for(int j = 0; j < xyPairs.length - 1; j++){
-            Term t1 = new Term(1.0, 1); // x
-            Term t2 = new Term(-1 * xyPairs[j][0], 0); // -y_(j,0) 
+            Term t1 = new Term(BigDecimal.ONE, 1); // x
+            Term t2 = new Term(xyPairs[j][0].multiply(new BigDecimal(-1), MathContext.UNLIMITED), 0); // -y_(j,0) 
             LinkedList<Term> exp = new LinkedList<>();
             exp.add(t1);
             exp.add(t2);
             PolynomialFunction currExpression = new PolynomialFunction(exp, ""); 
             // x - y_(j,0) 
 
-            Term t3 = new Term(1.0/(xyPairs[xyPairs.length - 1][0] - xyPairs[j][0]), 0);
+            Term t3 = new Term(BigDecimal.ONE.divide(xyPairs[xyPairs.length - 1][0].subtract(xyPairs[j][0]), 2, RoundingMode.HALF_EVEN), 0);
             // 1/(y_(N - 1,0) - y_(j,0))
 
             currExpression.multiplyByTerm(t3);

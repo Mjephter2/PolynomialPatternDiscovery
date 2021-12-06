@@ -1,10 +1,14 @@
 
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Comparator;
 
 /* This class implements a single term / variate polynomial
  * in the form c * x ^ p 
- * where c is the coefficient and p is the exponent of the independent variable,
+ * where c is the coefficient (represented by a BigDecimal) and p is the exponent of the independent variable,
  * which we assume to be x
  */
 public class Term {
@@ -17,7 +21,7 @@ public class Term {
     /* 
      * coefficient of polynomial term
      */
-    Double coefficient;
+    BigDecimal coefficient;
 
     /* 
      * exponent/degree of polynomial term
@@ -29,7 +33,7 @@ public class Term {
      * @param coeff -> coefficient of initialized Term
      * @param exp -> exponent of initialized Term
     */
-    public Term(Double coeff, int exp){
+    public Term(BigDecimal coeff, int exp){
         this.coefficient = coeff;
         this.exponent = exp;
     }
@@ -39,7 +43,7 @@ public class Term {
      * @param other -> Term to multiply by
     */
     public void multiplyBy(Term other){
-        this.coefficient = coefficient * other.coefficient;
+        this.coefficient = coefficient.multiply(other.coefficient, MathContext.UNLIMITED);
         this.exponent = this.exponent + other.exponent;
     }
 
@@ -48,20 +52,22 @@ public class Term {
      * @param input -> value to substitute x by
      * return the evaluated number
     */
-    public Double evaluate(Double input){
-        return this.coefficient * Math.pow(input, this.exponent);
+    public BigDecimal evaluate(BigDecimal input){
+        return this.coefficient.multiply(input.pow(exponent), MathContext.UNLIMITED);
     }
 
     /* 
      * returns a String representation of the Term
     */
     public String toString(){
-        if(coefficient == 0.0){
+        DecimalFormat df = new DecimalFormat("#.##########");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        if(coefficient.compareTo(BigDecimal.ZERO) == 0){
             return "0";
         }
         if(exponent == 0){
-            return String.valueOf(coefficient);
+            return String.valueOf(df.format(coefficient));
         }
-        return (exponent == 1 ? "(" + coefficient + ")" + "x" : "(" + coefficient + ")" + "x^" + exponent);
+        return (exponent == 1 ? "(" + df.format(coefficient) + ")" + "x" : "(" + df.format(coefficient) + ")" + "x^" + exponent);
     }
 }
