@@ -22,3 +22,6 @@ values for using the calculated function.
 The program will generate 2 text files
 1. results.txt : to store information about the calculated function (ex: h1, h2, h3 functions)
 2. outYValues.txt : to output the y values for the x values supplied from args[2]
+
+**Limitations**
+If you were to run the program using inputFile3.txt, all the ceofficients of the calculated polynomial are NaN. The coefficients of the intermediate polynomials may have gotten so small, they approximated to zero, leading to division by zero. I'll be working on fixing that issue next. 
