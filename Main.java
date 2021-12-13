@@ -20,6 +20,8 @@ import java.util.Scanner;
  *      the newly found polynomial
  * Outputs:
  *      results.txt : contains details about the function calculated
+ *          and also serves as a verification of the calculated function accuracy
+ *          in calculating the y values of the x values from the data set
  *      outYValues.txt : displays the y values of the x values from args[1]
  */
 public class Main {
