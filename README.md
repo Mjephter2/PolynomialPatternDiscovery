@@ -13,3 +13,12 @@ Note:
 
 The equation above essentially has 3 terms and we label them as `h1`, `h2` and `h3`. We calculate them seperately and sum them up to get `f`
 
+To run the program, you need to supply two text files names at runtime.
+1. args[0] has to be the name of a file with a header consisting of a number N representing the number of x y value pairs
+followed by N lines with values space separated.
+2. args[1] has to be the name of a file that contains a list of values representing x values we need to determine the y
+values for using the calculated function.
+
+The program will generate 2 text files
+1. results.txt : to store information about the calculated function (ex: h1, h2, h3 functions)
+2. outYValues.txt : to output the y values for the x values supplied from args[2]
