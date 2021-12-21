@@ -13,15 +13,19 @@ Note:
 
 The equation above essentially has 3 terms and we label them as `h1`, `h2` and `h3`. We calculate them seperately and sum them up to get `f`
 
-To run the program, you need to supply two text files names at runtime.
-1. args[0] has to be the name of a file with a header consisting of a number N representing the number of x y value pairs
+To run the program, you need to supply 4 arguments representing text files names at runtime.
+1. args[0] has to be the name of a file with a header consisting of a number N representing the number of x1 f value pairs
 followed by N lines with values space separated.
-2. args[1] has to be the name of a file that contains a list of values representing x values we need to determine the y
-values for using the calculated function.
+2. args[1] has to be the name of a file with a header consisting of a number N representing the number of x2 f value pairs.
+3. args[2]: text file containing x1 values with missing y values
+4. argv[3]: text file containing x2 values with missing y values
 
-The program will generate 2 text files
-1. results.txt : to store information about the calculated function (ex: h1, h2, h3 functions)
-2. outYValues.txt : to output the y values for the x values supplied from args[2]
+The program will generate 4 text files
+1. g1.txt: text that contains information about the function g1 generated from args[0], 
+2. g2.txt: text that contains information about the function g2 generated from args[1]
+3. outY1.txt: text file containing y values corresponding to given x1 values
+4. outY2.txt: text file containing y values corresponding to given x2 values
 
 **Limitations**
-If you were to run the program using inputFile3.txt, all the ceofficients of the calculated polynomial are NaN. The coefficients of the intermediate polynomials may have gotten so small, they approximated to zero, leading to division by zero. I'll be working on fixing that issue next. 
+* This program is not dynamic and only works for functions with one independent variable. 
+* As a consequence of the above, the generalized function h(x1, x2) in two variables is not calculated.
