@@ -6,6 +6,21 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.Scanner;
+
+/**
+ * inputs
+ * args[0]: text file with x1 f values pair with header consisting of the number of pairs
+ * args[1]: text file with x2 f values pair with header consisting of the number of pairs
+ * args[2]: text file containing x1 values with missing y values
+ * argv[3]: text file containing x2 values with missing y values
+ * 
+ * outputs
+ * g1.txt: text that contains information about the function g1 generated from args[0], 
+ * g2.txt: text that contains information about the function g2 generated from args[1],
+ *  also as a verification all the y values of the given x1 and x2 values are calculated
+ * outY1.txt: text file containing y values corresponding to given x1 values
+ * outY2.txt: text file containing y values corresponding to given x2 values
+ */
 public class Main {
 
     static DecimalFormat df = new DecimalFormat("#.#####");
