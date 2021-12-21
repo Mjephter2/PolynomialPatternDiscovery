@@ -1,3 +1,6 @@
 *.class
 result.txt
-outYValues.txt
+outY1.txt
+outY2.txt
+g1.txt
+g2.txt
